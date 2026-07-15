@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shopping_app/widgets/app_dialog.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/usecases/product_details_usecase.dart';
 import 'cart_controller.dart';
@@ -40,20 +41,15 @@ class ProductDetailsController extends GetxController {
 
     final cartController = Get.find<CartController>();
     cartController.addProduct(product.value!);
-
-    Get.snackbar(
-      "",
-      "",
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.black,
-      colorText: Colors.white,
-      borderRadius: 0,
-      titleText: const SizedBox.shrink(),
-      messageText: Text(
-        "product is added to cart",
-        style: TextStyle(fontSize: 14, color: Colors.white),
-      ),
-    );
+    AppDialog.show(
+  title: "Success",
+  message: "Product is added to cart",
+  confirmText: "OK",
+  onConfirm: () {
+    print("OK clicked");
+   Navigator.of(Get.overlayContext!).pop();
+  },
+);
     print("Product added to cart!");
   }
 
@@ -62,6 +58,20 @@ class ProductDetailsController extends GetxController {
     if (product.value == null) return;
     final cartController = Get.find<CartController>();
     cartController.addProduct(product.value!);
-    Get.toNamed('/cart'); // navigate to cart screen
+    AppDialog.show(
+  title: "Confirm Purchase",
+  message: "Are you sure you want to buy this product?",
+  confirmText: "Buy",
+  onConfirm: () {
+       Navigator.of(Get.overlayContext!).pop();
+
+    final cartController = Get.find<CartController>();
+    cartController.addProduct(product.value!);
+
+    Get.toNamed('/cart');
+  },
+);
+
+    //Get.toNamed('/cart'); // navigate to cart screen
   }
 }

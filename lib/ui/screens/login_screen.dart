@@ -12,6 +12,7 @@ class LoginScreen extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +32,33 @@ class LoginScreen extends StatelessWidget {
                   label: "Email",
                   validator: Validators.validateEmail, ),
               SizedBox(height: 20),
-              CustomTextField(controller: passwordController,
-                  label: "Password",
-                  obscureText: true,
-                  validator: Validators.validatePassword, ),
+             Obx(
+  () => CustomTextField(
+    controller: passwordController,
+    label: "Password",
+    obscureText: controller.isPasswordHidden.value,
+    validator: Validators.validatePassword,
+    suffixIcon: IconButton(
+      icon: Icon(
+        controller.isPasswordHidden.value
+            ? Icons.visibility_off
+            : Icons.visibility,
+        color: Colors.orange,
+      ),
+      onPressed: () {
+        controller.isPasswordHidden.toggle();
+      },
+    ),
+  ),
+),
               SizedBox(height: 30),
               Obx(() =>
                   CustomButton(
                     text: "Login",
                     loading: controller.isLoading.value,
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        controller.login(
+                        bool success =await controller.login(
                             emailController.text, passwordController.text);
                       }
                     },

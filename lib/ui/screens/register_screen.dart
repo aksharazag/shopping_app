@@ -7,6 +7,9 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/logo_widget.dart';
 
 class RegisterScreen extends StatelessWidget {
+  RxBool isPasswordHidden = true.obs;
+  RxBool isConfirmPasswordHidden = true.obs;
+
   final AuthController controller = Get.find();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -31,20 +34,42 @@ class RegisterScreen extends StatelessWidget {
                 validator: Validators.validateEmail,
               ),
               SizedBox(height: 20),
-              CustomTextField(
-                controller: passwordController,
-                label: "Enter Password",
-                obscureText: true,
-                validator: Validators.validatePassword,
+              Obx(
+                () => CustomTextField(
+                  controller: passwordController,
+                  label: "Enter Password",
+                  obscureText: isPasswordHidden.value,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      isPasswordHidden.value
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.orange,
+                    ),
+                    onPressed: () => isPasswordHidden.toggle(),
+                  ),
+                  validator: Validators.validatePassword,
+                ),
               ),
               SizedBox(height: 20),
-              CustomTextField(
-                controller: confirmPasswordController,
-                label: "Enter Confirm Password",
-                obscureText: true,
-                validator: (value) => Validators.validateConfirmPassword(
-                  passwordController.text,
-                  value,
+              Obx(
+                () => CustomTextField(
+                  controller: confirmPasswordController,
+                  label: "Enter Confirm Password",
+                  obscureText: isConfirmPasswordHidden.value,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      isConfirmPasswordHidden.value
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.orange,
+                    ),
+                    onPressed: () => isConfirmPasswordHidden.toggle(),
+                  ),
+                  validator: (value) => Validators.validateConfirmPassword(
+                    passwordController.text,
+                    value,
+                  ),
                 ),
               ),
               SizedBox(height: 30),
@@ -60,7 +85,7 @@ class RegisterScreen extends StatelessWidget {
                       );
                       if (success) {
                         Get.defaultDialog(
-                          title: "Registration Successful 🎉",
+                          title: "Registration Successful",
                           middleText:
                               "Your account has been created successfully.",
                           textConfirm: "OK",

@@ -5,6 +5,7 @@ class CustomTextField extends StatelessWidget {
   final String label;
   final bool obscureText;
   final String? Function(String?)? validator;
+  final Widget? suffixIcon;
 
 
   const CustomTextField({
@@ -12,7 +13,8 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     required this.label,
     this.obscureText = false,
-    this.validator,
+    this.validator, 
+    this.suffixIcon,
 
   });
 
@@ -29,6 +31,7 @@ class CustomTextField extends StatelessWidget {
       ),
       decoration: InputDecoration(
         labelText: label,
+        suffixIcon: suffixIcon,
         labelStyle: TextStyle(
           color: Colors.grey
         ),

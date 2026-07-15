@@ -35,8 +35,6 @@ void main() async {
 
   await Hive.openBox<OrderModelHive>('ordersBox');
 
-
-
   runApp(MyApp());
 }
 

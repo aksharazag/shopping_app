@@ -6,6 +6,8 @@ import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 
 class AuthController extends GetxController {
+  RxBool isPasswordHidden = true.obs;
+  RxBool isConfirmPasswordHidden = true.obs;
   final RegisterUseCase registerUseCase;
   final LoginUseCase loginUseCase;
   final LogoutUseCase logoutUseCase;
@@ -41,32 +43,27 @@ class AuthController extends GetxController {
   }
 
 
-  Future<void> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     try{
       isLoading.value = true;
       final user = await loginUseCase.execute(email, password);
+        print("User: $user");
       currentUser.value = user;
-      if (user == null) {
-        Get.snackbar(
-          "Error",
-          "Invalid email or password",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red.withOpacity(0.8),
-          colorText: Colors.white,
-        );
-        return; // stop here
-      }
-      Get.offAllNamed('/home');
-     // print(currentUser.value?.email);
+     
+        Get.offAllNamed('/home');
+         return true;
+    } catch (e){
+      
+Get.defaultDialog(
+      title: "Login Failed",
+      middleText: "Invalid email or password",
+      textConfirm: "OK",
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.orange,
+      onConfirm: () => Get.back(),
+    );
 
-    }catch (e){
-      Get.snackbar(
-        "Error $e",
-        "Login failed",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-      );
+      return false;
 
     } finally {
       isLoading.value = false;
