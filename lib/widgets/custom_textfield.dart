@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final bool obscureText;
   final String? Function(String?)? validator;
-
 
   const CustomTextField({
     super.key,
@@ -13,49 +12,75 @@ class CustomTextField extends StatelessWidget {
     required this.label,
     this.obscureText = false,
     this.validator,
-
   });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late bool isObscure;
+
+  @override
+  void initState() {
+    super.initState();
+    isObscure = widget.obscureText;
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      validator: validator,
+      controller: widget.controller,
+      obscureText: isObscure,
+      validator: widget.validator,
       cursorColor: Colors.black,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 20,
-        color: Colors.black
+        color: Colors.black,
       ),
       decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(
-          color: Colors.grey
+        labelText: widget.label,
+
+        suffixIcon: widget.obscureText
+            ? IconButton(
+                icon: Icon(
+                  isObscure
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                       color: Colors.orange,
+                ),
+                onPressed: () {
+                  setState(() {
+                    isObscure = !isObscure;
+                  });
+                },
+              )
+            : null,
+
+        labelStyle: const TextStyle(
+          color: Colors.grey,
         ),
+
         floatingLabelStyle: const TextStyle(
           color: Colors.orange,
           fontWeight: FontWeight.bold,
         ),
 
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.grey, width: 1.5),
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1.5,
+          ),
           borderRadius: BorderRadius.circular(12),
-
         ),
+
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.orange, width: 2),
+          borderSide: const BorderSide(
+            color: Colors.orange,
+            width: 2,
+          ),
           borderRadius: BorderRadius.circular(12),
         ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.orange, width: 1.5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-          borderRadius: BorderRadius.circular(12),
-        ),
-
-
       ),
     );
   }

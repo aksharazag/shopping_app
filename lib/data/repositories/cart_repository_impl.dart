@@ -25,7 +25,7 @@ class CartRepositoryImpl implements CartRepository {
             brand: c.brand,
             images: c.images,
             discount: c.discount,
-            quantity: c.quantity!,
+            quantity: c.quantity,
           ),
         )
         .toList();
@@ -51,7 +51,7 @@ class CartRepositoryImpl implements CartRepository {
         category: product.category,
         brand: product.brand,
         images: product.images,
-        discount: product.discount ?? 0,
+        discount: product.discount,
         quantity: 1,
       );
       await cartBox.add(cartProduct);
