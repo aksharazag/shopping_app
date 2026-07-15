@@ -60,7 +60,7 @@ class RegisterScreen extends StatelessWidget {
                       );
                       if (success) {
                         Get.defaultDialog(
-                          title: "Registration Successful 🎉",
+                          title: "Registration Successful ",
                           middleText:
                               "Your account has been created successfully.",
                           textConfirm: "OK",
@@ -78,7 +78,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextButton(
-                onPressed: () => Get.back(),
+                onPressed: () => Get.offNamed('/login'),
                 child: Text("Already have an account? Login"),
               ),
             ],

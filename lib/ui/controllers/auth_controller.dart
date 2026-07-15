@@ -41,41 +41,49 @@ class AuthController extends GetxController {
   }
 
 
-  Future<void> login(String email, String password) async {
-    try{
-      isLoading.value = true;
-      final user = await loginUseCase.execute(email, password);
-      currentUser.value = user;
-      if (user == null) {
-        Get.snackbar(
-          "Error",
-          "Invalid email or password",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red.withOpacity(0.8),
-          colorText: Colors.white,
-        );
-        return; // stop here
-      }
-      Get.offAllNamed('/home');
-     // print(currentUser.value?.email);
+Future<void> login(String email, String password) async {
+  try {
+    isLoading.value = true;
 
-    }catch (e){
-      Get.snackbar(
-        "Error $e",
-        "Login failed",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
+    final user = await loginUseCase.execute(email, password);
+    currentUser.value = user;
+
+    if (user == null) {
+      Get.dialog(
+        AlertDialog(
+          title: const Text("Login Failed"),
+          content: const Text(
+            "Invalid email or password",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
       );
-
-    } finally {
-      isLoading.value = false;
+      return;
     }
+
+    Get.offAllNamed('/home');
+  } catch (e) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Error"),
+        content: Text("Login failed\n$e"),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  } finally {
+    isLoading.value = false;
   }
-  // void logout() {
-  //   currentUser.value = null;
-  //   Get.offAllNamed('/login');
-  // }
+}
   Future<void> logout() async {
     await logoutUseCase();
     Get.offAllNamed('/login'); // clears navigation stack

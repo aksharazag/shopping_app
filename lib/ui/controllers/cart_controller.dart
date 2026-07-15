@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../domain/entities/product.dart';
@@ -61,6 +62,10 @@ class CartController extends GetxController {
     //await repository.addToCart(user.email, product);
     await addToCartUseCase(user.email, product);
     await loadCart();
+
+    ScaffoldMessenger.of(Get.context!).showSnackBar(
+      SnackBar(content: Text("${product.productName} added successfully")),
+    );
   }
 
   Future<void> removeFromCart(Product product) async {
@@ -76,50 +81,41 @@ class CartController extends GetxController {
     final user = Get.find<AuthController>().currentUser.value;
     if (user == null || user.email.isEmpty) return;
 
-
     await placeOrderUseCase(user.email);
     // Refresh orders
     final orderController = Get.find<OrderController>();
     await orderController.loadOrders();
 
     cartItems.clear();
-
-
   }
 
   Future<void> clearCart() async {
-     final user = Get.find<AuthController>().currentUser.value;
-     if (user == null || user.email.isEmpty) return;
+    final user = Get.find<AuthController>().currentUser.value;
+    if (user == null || user.email.isEmpty) return;
     await repository.clearCart(user.email);
   }
 
   void increaseQuantity(Product product) {
-  int index = cartItems.indexWhere((p) => p.id == product.id);
+    int index = cartItems.indexWhere((p) => p.id == product.id);
 
-  if (index != -1) {
-    cartItems[index].quantity = cartItems[index]. quantity! + 1;
-    cartItems.refresh();
-    
-  }
-}
-
-void decreaseQuantity(Product product) {
-  int index = cartItems.indexWhere((p) => p.id == product.id);
-
-  if (index != -1) {
-    if(cartItems[index].quantity! == 1 ){
-     
-     removeFromCart(product);
-      
-    } else{
-     cartItems[index].quantity = 
-        cartItems[index].quantity! - 1 ;
-        cartItems.refresh();
+    if (index != -1) {
+      cartItems[index].quantity = cartItems[index].quantity! + 1;
+      cartItems.refresh();
     }
-    
   }
-}
 
+  void decreaseQuantity(Product product) {
+    int index = cartItems.indexWhere((p) => p.id == product.id);
+
+    if (index != -1) {
+      if (cartItems[index].quantity! == 1) {
+        removeFromCart(product);
+      } else {
+        cartItems[index].quantity = cartItems[index].quantity! - 1;
+        cartItems.refresh();
+      }
+    }
+  }
 
   int get count => cartItems.length;
 
